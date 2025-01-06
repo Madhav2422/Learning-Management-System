@@ -1,13 +1,15 @@
 import './App.css'
 import Navbar from './components/ui/Navbar'
 import Login from './pages/Login'
+import HeroSection from './pages/student/HeroSection'
 
 function App() {
 
   return (
     <main>
-      <Navbar/>
-      <Login/>
+     <Navbar/>
+     <HeroSection />
+    <Login />
     </main>
   )
 }
