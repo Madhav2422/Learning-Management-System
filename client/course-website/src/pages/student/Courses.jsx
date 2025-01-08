@@ -5,7 +5,8 @@ import Course from './Course.jsx'
 const Courses = () => {
 
     const courses=[1,2,3,4,5,6,7,8]
-    const isLoading = false
+    const isLoading = false;
+
 
     return (
         <div className='bg-gray-50'>

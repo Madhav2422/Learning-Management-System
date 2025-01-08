@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from '@radix-ui/react-dropdown-menu';
+import { Link } from 'react-router-dom';
 
 
 const Navbar = () => {
@@ -56,8 +57,8 @@ const Navbar = () => {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>My learning</DropdownMenuItem>
-                    <DropdownMenuItem>Edit Profile</DropdownMenuItem>
+                    <DropdownMenuItem><Link to='my-learning'>My learning</Link></DropdownMenuItem>
+                    <DropdownMenuItem><Link to="profile">Edit Profile</Link></DropdownMenuItem>
                     <DropdownMenuItem>Log out</DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
