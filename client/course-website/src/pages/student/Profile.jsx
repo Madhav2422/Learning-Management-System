@@ -12,6 +12,10 @@ const Profile = () => {
 
     // We are calling api from here from auth.api
     const{data,isLoading}=useLoadUserQuery();
+
+    //Updating the profile mutation
+    
+
     // console.log(data);
     
 
