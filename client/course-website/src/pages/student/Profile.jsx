@@ -196,7 +196,7 @@ const Profile = () => {
 
     if (isUserLoading) return <h1>Profile Loading</h1>;
 
-    const { user } = data;
+    const  user  = data  && data.user;
 // console.log(user)
 
     return (
