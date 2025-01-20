@@ -133,49 +133,104 @@ export const getUserProfile=async(req,res)=>{
 
 
 // Update Profile
-export const updateProfile=async(req,res)=>{
+// export const updateProfile=async(req,res)=>{
+//     try {
+//        const userId=req.id;
+//        const {name}=req.body;
+//        const profilePhoto=req.file;
+
+//        const user=await  User.findById(userId)
+
+//        if(!user){
+//         return res.status(404).json({
+//             message:"User not found",
+//             success:false
+//         })
+//        }
+
+//        //extract public id of the old image rom the url if it exists
+//        if(user.photoUrl){
+//         //This way we can extract the cloudinary images 
+//         const publicId=user.photoUrl.split("/").pop().split(".")[0] //extract public id
+//         deleteMediaFromCloudinary(publicId)
+//        }
+
+//        //upload New Photo
+//        const cloudResponse=await uploadMedia(profilePhoto.path);
+//        const photoUrl=cloudResponse.secure_url;
+
+//        const updatedData={name,photoUrl};
+//        const updatedUser=await User.findByIdAndUpdate(userId,updatedData,{
+//         new:true
+//        }).select("-password")
+//        return res.status(200).json({
+//         success:true,
+//         user:updatedUser,
+//         message:"Profile Updated Successfully"
+
+//     }
+//        )
+
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({
+//             success:false,
+//             message:"Failed to load  update profile"
+//         })   
+//     }
+// }
+
+//Update Profile 
+export const updateProfile = async (req, res) => {
     try {
-       const userId=req.id;
-       const {name}=req.body;
-       const profilePhoto=req.file;
+        const userId = req.id; // Assuming req.id holds the user ID from authentication middleware
+        const { name } = req.body; // Extract fields from request body
+        const profilePhoto = req.file; // Extract uploaded file (if any)
 
-       const user=await  User.findById(userId)
+        const user = await User.findById(userId); // Find user by ID
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false,
+            });
+        }
 
-       if(!user){
-        return res.status(404).json({
-            message:"User not found",
-            success:false
-        })
-       }
+        // Create an object to hold the updated data dynamically
+        const updatedData = {};
 
-       //extract public id of the old image rom the url if it exists
-       if(user.photoUrl){
-        //This way we can extract the cloudinary images 
-        const publicId=user.photoUrl.split("/").pop().split(".")[0] //extract public id
-        deleteMediaFromCloudinary(publicId)
-       }
+        // Check if 'name' is provided and update it
+        if (name) {
+            updatedData.name = name;
+        }
 
-       //upload New Photo
-       const cloudResponse=await uploadMedia(profilePhoto.path);
-       const photoUrl=cloudResponse.secure_url;
+        // If a profile photo is provided, handle the upload and old photo deletion
+        if (profilePhoto) {
+            if (user.photoUrl) {
+                // Extract the public ID of the old image from the URL
+                const publicId = user.photoUrl.split("/").pop().split(".")[0];
+                await deleteMediaFromCloudinary(publicId); // Delete old image
+            }
 
-       const updatedData={name,photoUrl};
-       const updatedUser=await User.findByIdAndUpdate(userId,updatedData,{
-        new:true
-       }).select("-password")
-       return res.status(200).json({
-        success:true,
-        user:updatedUser,
-        message:"Profile Updated Successfully"
+            // Upload new photo to Cloudinary
+            const cloudResponse = await uploadMedia(profilePhoto.path);
+            updatedData.photoUrl = cloudResponse.secure_url; // Add new photo URL to updatedData
+        }
 
-    }
-       )
+        // Update the user document with the new fields
+        const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+            new: true, // Return the updated document
+        }).select("-password"); // Exclude password from response
 
+        return res.status(200).json({
+            success: true,
+            user: updatedUser,
+            message: "Profile updated successfully",
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            success:false,
-            message:"Failed to load  update profile"
-        })   
+            success: false,
+            message: "Failed to update profile",
+        });
     }
-}
+};

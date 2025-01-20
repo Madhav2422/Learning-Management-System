@@ -9,4 +9,10 @@ export const appStore = configureStore({
     //This makes sure that the store can handle both normal Redux behavior and the extra features provided by authApi, like managing API calls, caching, and syncing data automatically.
     middleware: (defaultMiddleware) => defaultMiddleware().concat(authApi.middleware)
 
-})
+});
+
+const initializeApp= async()=>{
+        await appStore.dispatch(authApi.endpoints.loadUser.initiate({},{forceRefetch:true}))
+}
+
+initializeApp();
