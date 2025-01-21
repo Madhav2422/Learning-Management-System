@@ -22,8 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLogoutUserMutation } from '@/features/apis/authApi';
@@ -33,25 +32,25 @@ import { useSelector } from 'react-redux';
 
 const Navbar = () => {
 
-  const {user} = useSelector(store=>store.auth)
- const [logoutUser,{data,isSuccess} ]=useLogoutUserMutation()
- const navigate =useNavigate();
+  const { user } = useSelector(store => store.auth)
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation()
+  const navigate = useNavigate();
 
 
- const logoutHandler=async ()=>{
-  await logoutUser()
- }
+  const logoutHandler = async () => {
+    await logoutUser()
+  }
 
   console.log(user);
 
 
- useEffect(()=>{
-  if(isSuccess){
-    toast.success(data.message || " User Log out ")
-    navigate("/login")
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data.message || " User Log out ")
+      navigate("/login")
+    }
 
- },[isSuccess])
+  }, [isSuccess])
 
   return (
 
@@ -70,7 +69,7 @@ const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar>
-                    <AvatarImage src={user?.photoUrl||"https://github.com/shadcn.png"} />
+                    <AvatarImage src={user?.photoUrl || "https://github.com/shadcn.png"} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
@@ -82,16 +81,23 @@ const Navbar = () => {
                     <DropdownMenuItem><Link to="profile">Edit Profile</Link></DropdownMenuItem>
                     <DropdownMenuItem onClick={logoutHandler}>Log out</DropdownMenuItem>
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    Dashboard
-                  </DropdownMenuItem>
+                  {
+                    user.role === "instructor" && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          Dashboard
+                        </DropdownMenuItem>
+                      </>
+                    )
+                  }
+
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className='flex items-center gap-2'>
-                <Button variant="outline" onClick={()=>navigate("/login")} >Login</Button>
-                <Button onClick={()=>navigate("/login")}  >Sign Up</Button>
+                <Button variant="outline" onClick={() => navigate("/login")} >Login</Button>
+                <Button onClick={() => navigate("/login")}  >Sign Up</Button>
               </div>
             )
           }
@@ -113,7 +119,7 @@ export default Navbar
 
 
 const MobileNavbar = () => {
-  const role="instructor"
+  const role = "instructor"
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -124,23 +130,23 @@ const MobileNavbar = () => {
           <SheetTitle>Aspiration Institute</SheetTitle>
           <DarkMode />
         </SheetHeader>
-        <Separator className='mr-2'/>
-         <nav className='flex flex-col space-y-4'>
+        <Separator className='mr-2' />
+        <nav className='flex flex-col space-y-4'>
           <span>My learning</span>
           <span>Edit Profile</span>
           <span>Log Out</span>
-         </nav>
+        </nav>
 
-         {
-          role==="instructor" && (
+        {
+          role === "instructor" && (
             <SheetFooter>
-            <SheetClose asChild>
-              <Button type="submit">Dashboard</Button>
-            </SheetClose>
-          </SheetFooter>
+              <SheetClose asChild>
+                <Button type="submit">Dashboard</Button>
+              </SheetClose>
+            </SheetFooter>
           )
-         }
-        
+        }
+
       </SheetContent>
     </Sheet>
 
