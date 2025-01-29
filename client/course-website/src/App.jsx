@@ -8,6 +8,7 @@ import { RouterProvider } from 'react-router'
 import Courses from './pages/student/Courses'
 import { MyLearning } from './pages/student/MyLearning'
 import Profile from './pages/student/Profile'
+import { Sidebar } from 'lucide-react'
 
 function App() {
 
@@ -36,8 +37,16 @@ function App() {
       {
         path:"profile",
         element:<Profile/>
+      },
+
+      // admin routes starts from here 
+      {
+        path:"admin",
+        element:<Sidebar/>
       }
-    ]
+
+    ],
+     
   }
  ])
 
