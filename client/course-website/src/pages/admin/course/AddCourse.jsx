@@ -1,14 +1,55 @@
+import { Label } from '@/components/ui/label'
 import React from 'react'
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
+import { SelectGroup } from '@radix-ui/react-select'
+import { Button } from '@/components/ui/button'
+import { useNavigate } from 'react-router-dom'
+  
 const AddCourse = () => {
+
+    const navigate=useNavigate()
+
     return (
         <div className='flex-1 mx-10'>
             <div className='mb-4'>
-                <h1 className='font-bold  text-4xl'>Lets add course,add some basic details for your new course</h1>
+                <h1 className='font-bold  text-xl'>Lets add course,add some basic details for your new course</h1>
                 <p className='text-sm'>
                     Provide the essential details to create and customize your new course effortlessly
                 </p>
             </div>
+            <div className='space-y-4'>
+                <Label>Title</Label>
+                <input type="text" name="courseTitle" placeholder="Your Course Name" />
+            </div>
+            <div className='space-y-4'>
+                <Label>Category</Label>
+                <Select>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Category</SelectLabel>
+                            <SelectItem value="apple">Apple</SelectItem>
+                            <SelectItem value="banana">Banana</SelectItem>
+                            <SelectItem value="blueberry">Blueberry</SelectItem>
+                            <SelectItem value="grapes">Grapes</SelectItem>
+                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                </div>
+                <div className='flex items-center gap-2'>
+                    <Button variant="outline" onClick={()=>navigate("/admin/course")}>Back</Button>
+                    <Button>Create</Button>
+                </div>
         </div>
     )
 }
