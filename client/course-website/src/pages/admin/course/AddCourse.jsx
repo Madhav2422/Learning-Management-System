@@ -1,5 +1,5 @@
 import { Label } from '@/components/ui/label'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -13,22 +13,34 @@ import { SelectGroup } from '@radix-ui/react-select'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { useCreateCourseMutation } from '@/features/apis/courseApi';
+import { toast } from 'sonner';
 
 const AddCourse = () => {
 
     const [courseTitle, setCourseTitle] = useState("");
     const [category, setCategory] = useState("");
 
-    const navigate = useNavigate()
-    const isLoading = false;
+    //Api call
+    const [createCourse, { data, isLoading, error, isSuccess }] = useCreateCourseMutation()
 
-    const createCourseHandler = async () => {
-        console.log(courseTitle, category);
-    }
+    const navigate = useNavigate()
 
     const getSelectedCategory = (value) => {
         setCategory(value)
     }
+
+    const createCourseHandler = async () => {
+        // console.log(courseTitle, category);
+        await createCourse({ courseTitle, category })
+    }
+
+    // for displaying message
+    useEffect(()=>{
+        if(isSuccess){
+            toast.success(data?.message|| "Course created")
+        }
+    },[isSuccess,error])
 
     return (
         <div className="flex-1 mx-10">
