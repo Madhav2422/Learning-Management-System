@@ -13,8 +13,8 @@ import { SelectGroup } from '@radix-ui/react-select'
 import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import { useCreateCourseMutation } from '@/features/apis/courseApi';
 import { toast } from 'sonner';
+import { useCreateCourseMutation } from '@/features/apis/courseApi';
 
 const AddCourse = () => {
 
@@ -39,6 +39,7 @@ const AddCourse = () => {
     useEffect(()=>{
         if(isSuccess){
             toast.success(data?.message|| "Course created")
+            navigate("/admin/course")
         }
     },[isSuccess,error])
 
