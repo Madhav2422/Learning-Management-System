@@ -1,28 +1,134 @@
+import RichTextEditor from '@/components/RichTextEditor'
 import { Button } from '@/components/ui/button'
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import React from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import React, { useState } from 'react'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 const CourseTab = () => {
 
-    const isPublished=true
+    const isPublished = true
+    const [input, setInput] = useState({
+        courseTitle: "",
+        subtitle: "",
+        description: "",
+        category: "",
+        courseLevel: "",
+        coursePrice: "",
+        courseThumbnail: ""
+    });
 
-  return (
-    <Card>
-        <CardHeader>
-            <div>
-                <CardTitle>Basic course information </CardTitle>
-                <CardDescription>
-                    Make changes to your courses here.Click save when're done 
-                </CardDescription>
-            </div>
-            <div>
-                <Button variant="outline">
+    const changeEventHandler = (e) => {
+        const { name, value } = e.target
+        setInput({ ...input, [name]: value })
 
-                </Button>
-            </div>
-        </CardHeader>
-    </Card>
-  )
+    }
+
+    return (
+        <Card>
+            <CardHeader classname="flex flex-row justify-between">
+                <div>
+                    <CardTitle>Basic course information </CardTitle>
+                    <CardDescription>
+                        Make changes to your courses here.Click save when're done
+                    </CardDescription>
+                </div>
+                <div className='space-y-2'>
+                    <Button variant="outline">
+                        {
+                            isPublished ? "Unpublished" : "Published"
+                        }
+                    </Button>
+                    <Button>Remove Course</Button>
+                </div>
+            </CardHeader>
+
+            <CardContent>
+                <div className='space-y-4 mt-5'>
+                    <div>
+                        <Label>Title</Label>
+                        <Input type="text" placeholder="Ex.full stack developer" name="courseTitle"
+                            value={input.courseTitle}
+                            onchange={changeEventHandler}
+                        />
+                    </div>
+                    <div>
+                        <Label>Subtitle</Label>
+                        <Input type="text" placeholder="Ex. Become a full stack developer from zero to hero" name="subtitle"
+                            value={input.subtitle}
+                            onchange={changeEventHandler}
+                        />
+                    </div>
+                    <div>
+                        <Label>Description</Label>
+                        <RichTextEditor input={input} setInput={setInput} />
+                    </div>
+                    <div className='flex items-center gap-5'>
+                        <div>
+                            <Label>Category</Label>
+                            <Select>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Select a category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Category</SelectLabel>
+                                        <SelectItem value="Next JS">Next JS</SelectItem>
+                                        <SelectItem value="Data Science">Data Science</SelectItem>
+                                        <SelectItem value="Frontend Development">
+                                            Frontend Development
+                                        </SelectItem>
+                                        <SelectItem value="Fullstack Development">
+                                            Fullstack Development
+                                        </SelectItem>
+                                        <SelectItem value="MERN Stack Development">
+                                            MERN Stack Development
+                                        </SelectItem>
+                                        <SelectItem value="Javascript">Javascript</SelectItem>
+                                        <SelectItem value="Python">Python</SelectItem>
+                                        <SelectItem value="Docker">Docker</SelectItem>
+                                        <SelectItem value="MongoDB">MongoDB</SelectItem>
+                                        <SelectItem value="HTML">HTML</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <Label>Course Lavel</Label>
+                            <div>
+                               
+                                <Select>
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Select a course level" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Course Level</SelectLabel>
+                                            <SelectItem value="Beginner">Beginner</SelectItem>
+                                            <SelectItem value="Medium">Medium</SelectItem>
+                                            <SelectItem value="Advanced">
+                                              Advanced
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
+
+        </Card>
+    )
 }
 
 export default CourseTab
