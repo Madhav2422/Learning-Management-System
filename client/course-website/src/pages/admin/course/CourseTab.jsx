@@ -13,10 +13,15 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Loader2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const CourseTab = () => {
-
+    
     const isPublished = true
+    const isLoading=false;
+    const navigate=useNavigate()
+
     const [input, setInput] = useState({
         courseTitle: "",
         subtitle: "",
@@ -32,6 +37,8 @@ const CourseTab = () => {
         setInput({ ...input, [name]: value })
 
     }
+
+
 
     return (
         <Card>
@@ -103,9 +110,9 @@ const CourseTab = () => {
                             </Select>
                         </div>
                         <div>
-                            <Label>Course Lavel</Label>
+                            <Label>Course Level</Label>
                             <div>
-                               
+
                                 <Select>
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select a course level" />
@@ -116,13 +123,46 @@ const CourseTab = () => {
                                             <SelectItem value="Beginner">Beginner</SelectItem>
                                             <SelectItem value="Medium">Medium</SelectItem>
                                             <SelectItem value="Advanced">
-                                              Advanced
+                                                Advanced
                                             </SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
+                        <div>
+                            <Label>Prince in (INR)</Label>
+                            <Input
+                                type="number"
+                                name="coursePrice"
+                                value={input.coursePrice}
+                                onChange={changeEventHandler}
+                                placeholder="2000"
+                                className='w-fit'
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <Label>Course Thumbnail</Label>
+                        <Input
+                            type="file"
+                            accept="image/*"
+                        />
+                    </div>
+                    <div>
+                        <Button onClick={()=> navigate("/admin/course") } variant="outline" >Cancel</Button>
+                        <Button disabled={isLoading} >
+                            {
+                                isLoading?(
+                                    <>
+                                    <Loader2 className='mr-2 h-4 w-4 animate spin'/>
+                                    Please wait 
+                                    </>
+                                ):(
+                                    "Save"
+                                )
+                            }
+                        </Button>
                     </div>
                 </div>
             </CardContent>
