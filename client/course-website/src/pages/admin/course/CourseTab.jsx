@@ -17,10 +17,10 @@ import { Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 const CourseTab = () => {
-    
+
     const isPublished = true
-    const isLoading=false;
-    const navigate=useNavigate()
+    const isLoading = false;
+    const navigate = useNavigate()
 
     const [input, setInput] = useState({
         courseTitle: "",
@@ -31,6 +31,7 @@ const CourseTab = () => {
         coursePrice: "",
         courseThumbnail: ""
     });
+    const [previewThumbnail, setpreviewThumbnail] = useState("")
 
     const changeEventHandler = (e) => {
         const { name, value } = e.target
@@ -39,6 +40,31 @@ const CourseTab = () => {
     }
 
 
+    const selectCategory = (value) => {
+        setInput({ ...input, category: value })
+    }
+
+    const selectCourseLevel = (value) => {
+        setInput({ ...input, courseLevel: value })
+    }
+
+
+    //get file
+    const selectthumbnail = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setInput({ ...input, courseThumbnail: file })
+
+            // show the preview browser cannot get the image directly they are converted into file url
+            const fileReader = new FileReader();
+            fileReader.onloadend = () => setpreviewThumbnail(fileReader.result)
+            fileReader.readAsDataURL(file)
+        }
+    }
+
+    const updateCourse=()=>{
+        console.log(input);
+    }
 
     return (
         <Card>
@@ -65,14 +91,14 @@ const CourseTab = () => {
                         <Label>Title</Label>
                         <Input type="text" placeholder="Ex.full stack developer" name="courseTitle"
                             value={input.courseTitle}
-                            onchange={changeEventHandler}
+                            onChange={changeEventHandler}
                         />
                     </div>
                     <div>
                         <Label>Subtitle</Label>
                         <Input type="text" placeholder="Ex. Become a full stack developer from zero to hero" name="subtitle"
                             value={input.subtitle}
-                            onchange={changeEventHandler}
+                            onChange={changeEventHandler}
                         />
                     </div>
                     <div>
@@ -82,7 +108,7 @@ const CourseTab = () => {
                     <div className='flex items-center gap-5'>
                         <div>
                             <Label>Category</Label>
-                            <Select>
+                            <Select onValueChange={selectCategory} >
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder="Select a category" />
                                 </SelectTrigger>
@@ -113,7 +139,7 @@ const CourseTab = () => {
                             <Label>Course Level</Label>
                             <div>
 
-                                <Select>
+                                <Select onValueChange={selectCourseLevel}>
                                     <SelectTrigger className="w-[180px]">
                                         <SelectValue placeholder="Select a course level" />
                                     </SelectTrigger>
@@ -147,18 +173,24 @@ const CourseTab = () => {
                         <Input
                             type="file"
                             accept="image/*"
+                            onChange={selectthumbnail}
                         />
+                        {
+                            previewThumbnail && (
+                                <img src={previewThumbnail} className='w-64 my-2' alt='Course Thumbnail' />
+                            )
+                        }
                     </div>
                     <div>
-                        <Button onClick={()=> navigate("/admin/course") } variant="outline" >Cancel</Button>
-                        <Button disabled={isLoading} >
+                        <Button onClick={() => navigate("/admin/course")} variant="outline" >Cancel</Button>
+                        <Button disabled={isLoading} onClick={updateCourse} >
                             {
-                                isLoading?(
+                                isLoading ? (
                                     <>
-                                    <Loader2 className='mr-2 h-4 w-4 animate spin'/>
-                                    Please wait 
+                                        <Loader2 className='mr-2 h-4 w-4 animate spin' />
+                                        Please wait
                                     </>
-                                ):(
+                                ) : (
                                     "Save"
                                 )
                             }
