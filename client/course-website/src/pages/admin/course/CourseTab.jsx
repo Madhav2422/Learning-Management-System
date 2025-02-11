@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import React, { useState } from 'react'
+ 
+import React, { useEffect, useState } from 'react'
 import {
     Select,
     SelectContent,
@@ -14,12 +15,24 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Loader2 } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useEditCourseMutation } from '@/features/apis/courseApi'
+import { toast } from "sonner";
+
+
 
 const CourseTab = () => {
 
+    //api calling for edit the course
+    const [editCourse, data, isLoading, isSuccess, error] = useEditCourseMutation()
+
+    //to receive the courseID
+    const params=useParams();
+    const courseId=params.courseId;
+    
+
     const isPublished = true
-    const isLoading = false;
+
     const navigate = useNavigate()
 
     const [input, setInput] = useState({
@@ -62,9 +75,27 @@ const CourseTab = () => {
         }
     }
 
-    const updateCourse=()=>{
-        console.log(input);
+    const updateCourse = async () => {
+        const formData = new FormData()
+        formData.append("courseTitle", input.courseTitle)
+        formData.append("subtitle", input.subtitle)
+        formData.append("description", input.description)
+        formData.append("category", input.category)
+        formData.append("courseLevel", input.courseLevel)
+        formData.append("coursePrice", input.coursePrice)
+        formData.append("courseThumbnail", input.courseThumbnail)
+
+        const response  = await editCourse({formData,courseId})
     }
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success(data.message || "Course Updated")
+        }
+        if (error) {
+            toast.error(error.data.message || "Failed to update the course")
+        }
+    }, [isSuccess, error])
 
     return (
         <Card>

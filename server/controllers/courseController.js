@@ -1,4 +1,5 @@
 import { Course } from "../models/courseModel.js";
+import{deleteMediaFromCloudinary, uploadMedia} from "../utils/cloudinary.js"
 
 export const createCourse=async(req,res)=>{
     try {
@@ -58,3 +59,59 @@ export const getCreatorCourses=async(req,res)=>{
     })
 }
 }
+
+// api for edit course 
+export const editCourse = async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        const { courseTitle, subTitle, description, category, courseLevel, coursePrice } = req.body;
+        const thumbnail = req.file;
+
+        let course = await Course.findById(courseId);
+
+        if (!course) {
+            return res.status(404).json({
+                message: "Course not found"
+            });
+        }
+
+        let courseThumbnail = course.courseThumbnail; // Default to existing thumbnail
+
+        if (thumbnail) {
+            if (course.courseThumbnail) {
+                try {
+                    const thumbnailUrlParts = course.courseThumbnail.split("/");
+                    const publicId = thumbnailUrlParts.pop().split(".")[0];
+                    await deleteMediaFromCloudinary(publicId); // Delete old image
+                } catch (err) {
+                    console.log("Error deleting old image:", err);
+                }
+            }
+
+            // Upload new thumbnail
+            const uploadedMedia = await uploadMedia(thumbnail.path);
+            if (!uploadedMedia || !uploadedMedia.secure_url) {
+                return res.status(500).json({
+                    message: "Failed to upload new thumbnail"
+                });
+            }
+            courseThumbnail = uploadedMedia.secure_url;
+        }
+
+        // Updated data
+        const updatedData = { courseTitle, subTitle, description, category, courseLevel, coursePrice, courseThumbnail };
+
+        course = await Course.findByIdAndUpdate(courseId, updatedData, { new: true });
+
+        return res.status(200).json({
+            course,
+            message: "Course updated successfully"
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Failed to update the course"
+        });
+    }
+};
