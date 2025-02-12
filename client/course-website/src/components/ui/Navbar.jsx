@@ -41,7 +41,6 @@ const Navbar = () => {
     await logoutUser()
   }
 
-  console.log(user);
 
 
   useEffect(() => {
