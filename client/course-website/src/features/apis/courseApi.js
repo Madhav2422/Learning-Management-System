@@ -49,7 +49,15 @@ export const courseApi = createApi({
             }),
         }),
 
+        getCourseLecture: builder.query({
+            query: ( courseId ) => ({
+                url: `/${courseId}/lecture`,
+                method: "GET",
+
+            }),
+        }),
+
     }),
 });
 
-export const { useCreateCourseMutation, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation } = courseApi;
+export const { useCreateCourseMutation, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation,useGetCourseLectureQuery } = courseApi;

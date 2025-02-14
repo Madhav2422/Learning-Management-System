@@ -57,7 +57,7 @@ const Profile = () => {
 
     if (isUserLoading) return <h1>Profile Loading</h1>;
 
-    const  user  = data  && data.user;
+    const  user  = data?.user;
 // console.log(user)
 
     return (
@@ -74,7 +74,7 @@ const Profile = () => {
                     <div className="mb-2">
                         <h1 className="font-semibold text-gray-900 dark:text-gray-200">
                             Name:
-                            <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">{user.name}</span>
+                            <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">{user?.name}</span>
                         </h1>
                     </div>
                     <div className="mb-2">
