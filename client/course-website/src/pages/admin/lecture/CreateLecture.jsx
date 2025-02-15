@@ -20,7 +20,7 @@ const CreateLecture = () => {
     const [createLecture, { data, isLoading, error, isSuccess }] = useCreateLectureMutation();
 
     //Get lecture API
-    const { data: lectureData, isLoading: lectureLoading, isError: lectureError } = useGetCourseLectureQuery(courseId);
+    const { data: lectureData, isLoading: lectureLoading, isError: lectureError ,refetch} = useGetCourseLectureQuery(courseId);
 
     const createLectureHandler = async () => {
         await createLecture({ lectureTitle, courseId })
@@ -29,6 +29,7 @@ const CreateLecture = () => {
     useEffect(() => {
 
         if (isSuccess) {
+            refetch();
             toast.success(data.message);
         }
         if (error) {
