@@ -62,9 +62,15 @@ export const courseApi = createApi({
                 method:"POST",
                 body:{lectureTitle, videoInfo, isPreviewFree }
             })
+        }),
+       removeLecture:builder.query({
+            query:(lectureId)=>({
+                url:`/lecture/${lectureId}`,
+                method:"DELETE"
+            })
         })
 
     }),
 });
 
-export const { useCreateCourseMutation, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation,useGetCourseLectureQuery,useEditLectureMutation } = courseApi;
+export const { useCreateCourseMutation, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation,useGetCourseLectureQuery,useEditLectureMutation,useRemoveLectureQuery } = courseApi;
