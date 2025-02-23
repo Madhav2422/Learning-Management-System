@@ -18,7 +18,7 @@ import {
     SelectValue
 } from "@/components/ui/select";
 
-import { useEditCourseMutation, useGetCourseByIDQuery } from '@/features/apis/courseApi';
+import { useEditCourseMutation, useGetCourseByIDQuery, usePublishCourseMutation } from '@/features/apis/courseApi';
 
 const CourseTab = () => {
     const navigate = useNavigate();
@@ -37,8 +37,9 @@ const CourseTab = () => {
     const [previewThumbnail, setPreviewThumbnail] = useState("");
 
     // API calls (must be called unconditionally)
-    const { data: coursebyIddata, isLoading: coursebyIdLoading } = useGetCourseByIDQuery(courseId);
+    const { data: coursebyIddata, isLoading: coursebyIdLoading,refetch } = useGetCourseByIDQuery(courseId);
     const [editCourse, { isLoading, isSuccess, error, data }] = useEditCourseMutation();
+    const [publishCourse, { }] = usePublishCourseMutation();
 
     // Populate form when course data changes
     useEffect(() => {
@@ -108,6 +109,19 @@ const CourseTab = () => {
         // }
     };
 
+    // Publish status handler 
+    const publishStatusHandler = async (action) => {
+        try {
+            const response = await publishCourse({ courseId, query: action });
+            if (response.data) {
+                refetch();
+                toast.success(response.data.message);
+            }
+        } catch (error) {
+            toast.error("Failed to publish or unpublish course");
+        }
+    }
+
     return (
         <Card>
             <CardHeader className="flex flex-row justify-between">
@@ -118,7 +132,9 @@ const CourseTab = () => {
                     </CardDescription>
                 </div>
                 <div className='space-y-2'>
-                    <Button variant="outline">Published</Button>
+                    <Button disabled={coursebyIddata?.course.lectures.length === 0} variant="outline" onClick={() => publishStatusHandler(coursebyIddata?.course.isPublished ? "false" : "true")}>
+                        {coursebyIddata?.course.isPublished ? "Unpublished" : "Publish"}
+                    </Button>
                     <Button>Remove Course</Button>
                 </div>
             </CardHeader>
