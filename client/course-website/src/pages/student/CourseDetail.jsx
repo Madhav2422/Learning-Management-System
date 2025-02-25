@@ -4,6 +4,7 @@ import React from 'react'
 import Lecture from '../admin/lecture/Lecture'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
+import BuyCourseButton from '@/components/BuyCourseButton'
 
 const CourseDetail = () => {
 
@@ -66,10 +67,10 @@ const CourseDetail = () => {
                         <CardFooter className='flex justify-center p-4'>
                             {
                                 purchasedCourse ? (
-                                    <Button className='w-full'>Continue Course</Button>) : (<Button className='w-full'>
-                                        Purchase Course
-                                    </Button>
-                            )
+                                    <Button className='w-full'>Continue Course</Button>) :
+                                    (<BuyCourseButton />
+
+                                    )
                             }
 
                         </CardFooter>
