@@ -5,31 +5,55 @@ import Lecture from '../admin/lecture/Lecture'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import BuyCourseButton from '@/components/BuyCourseButton'
+import { useGetCourseByIDQuery } from '@/features/apis/courseApi'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { useGetCourseDetailWithStatusQuery } from '@/features/apis/purchaseApi'
+import ReactPlayer from 'react-player'
 
 const CourseDetail = () => {
 
-    const purchasedCourse = true;
+    // const purchasedCourse = false;
+    const { courseId } = useParams(); // Get courseId from URL params
+    // const { data:course, isLoading } = useGetCourseByIDQuery(courseId);
+    const { data, isLoading, isSuccess, error, isError } = useGetCourseDetailWithStatusQuery(courseId);
+   const navigate=useNavigate();
+    if (isLoading) return <h1>Loading....</h1>
+    if (isError) return <h1>Failed to load course details</h1>
+
+    const { course, purchased } = data
+
+    const handleContinueCourse=()=>{
+      navigate(`/course-progress/${courseId}`)
+    }
 
     return (
-        <div>
-            <div className='bg-[#2D2F31] text-white'>
-                <div className='max-w-7xl mx-auto flex flex-col gap-2 py-8 px-4 md:px-8'>
-                    <h1 className='font bold text-2xl md:text-3xl'>Course Title</h1>
-                    <p className='text-base md:text-lg' >Course Sub-title</p>
-                    <p >Created by -{""} <span className='text-[#C0C4FC] underline italic' >Madhav Hirani</span> </p>
-
-                    <div className='flex items-center gap-2 text-sm'>
+        <div className="space-y-5">
+            <div className="bg-[#2D2F31] text-white">
+                <div className="max-w-7xl mx-auto py-8 px-4 md:px-8 flex flex-col gap-2">
+                    <h1 className="font-bold text-2xl md:text-3xl">
+                        {course?.courseTitle}
+                    </h1>
+                    <p className="text-base md:text-lg">Course Sub-title</p>
+                    <p>
+                        Created By{" "}
+                        <span className="text-[#C0C4FC] underline italic">
+                            {course?.creator.name}
+                        </span>
+                    </p>
+                    <div className="flex items-center gap-2 text-sm">
                         <BadgeInfo size={16} />
-                        <p>Last updated 11-11-2024</p>
+                        <p>Last updated {course?.createdAt.split("T")[0]}</p>
                     </div>
-                    <p>Students enrolled:10</p>
+                    <p>Students enrolled: {course?.enrolledStudents.length}</p>
                 </div>
             </div>
-            <div className='mx-2-7xl mx-auto my-5 px-4 md:px-8 flex flex-col lg:flex-row justify-between gap-10'>
-                <div className='w-full lg:w-1/2 space-y-5'>
-                    <h1 className='font-bold text-xl md:text-2xl'>Description</h1>
-                    <p className='text-sm'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium aliquam distinctio cum dolorum harum architecto nemo doloremque similique, error ut facilis vel! Minima.</p>
-                    <Card>
+            <div className="max-w-7xl mx-auto my-5 px-4 md:px-8 flex flex-col lg:flex-row justify-between gap-10">
+                <div className="w-full lg:w-1/2 space-y-5">
+                    <h1 className="font-bold text-xl md:text-2xl">Description</h1>
+                    <p
+                        className="text-sm"
+                        dangerouslySetInnerHTML={{ __html: course.description }}
+                    />                 <Card>
                         <CardHeader>
                             <CardTitle>Course Content</CardTitle>
                             <CardDescription>
@@ -38,14 +62,14 @@ const CourseDetail = () => {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {
-                                [1, 2, 3].map((_, index) => (
+                                course.lectures.map((lecture, index) => (
                                     <div key={index} className='flex items-center gap-3 text-sm'>
                                         <span>
                                             {
                                                 true ? <PlayCircle size={14} /> : <Lock size={14} />
                                             }
                                         </span>
-                                        <p>Lecture Title</p>
+                                        <p>{lecture.lectureTitle}</p>
                                         <p></p>
                                     </div>
                                 ))
@@ -57,7 +81,10 @@ const CourseDetail = () => {
                     <Card>
                         <CardContent className='p-4 flex flex-col'>
                             <div className=' w-full aspect-video mb-4'>
-                                React player  Video
+                              <ReactPlayer width="100%" height={"100%"} 
+                                url={course.lectures[0].videoUrl}
+                                controls={true}
+                              />
                             </div>
                             <h1>Lecture Title</h1>
                             <Separator className='my-2' />
@@ -66,9 +93,9 @@ const CourseDetail = () => {
 
                         <CardFooter className='flex justify-center p-4'>
                             {
-                                purchasedCourse ? (
-                                    <Button className='w-full'>Continue Course</Button>) :
-                                    (<BuyCourseButton />
+                                purchased ? (
+                                    <Button onClick={handleContinueCourse} className='w-full'>Continue Course</Button>) :
+                                    (<BuyCourseButton courseId={courseId} />
 
                                     )
                             }

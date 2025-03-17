@@ -2,6 +2,7 @@ import { createCourse, createLecture, editCourse, editLecture, getCourseByID, ge
 import isAuthenticated from "../middleware/isAuthenticated.js";
 import express from "express"
 import upload from "../utils/multer.js"
+import { paymentRazorpay, verifyPayment } from "../controllers/purchaseCourseController.js";
 
 
 const router=express.Router();
@@ -17,6 +18,8 @@ router.route("/:courseId/lecture/:lectureId").post(isAuthenticated,editLecture)
 router.route("/lecture/:lectureId").delete(isAuthenticated,removeLecture);
 router.route("/lecture/:lectureId").get(isAuthenticated,getLecturebyId);
 router.route("/:courseId").patch(isAuthenticated, togglePublishCourse);
+// router.post("/purchase", isAuthenticated, paymentRazorpay);
+
 
 
 

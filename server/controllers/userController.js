@@ -132,55 +132,6 @@ export const getUserProfile=async(req,res)=>{
 
 
 
-// Update Profile
-// export const updateProfile=async(req,res)=>{
-//     try {
-//        const userId=req.id;
-//        const {name}=req.body;
-//        const profilePhoto=req.file;
-
-//        const user=await  User.findById(userId)
-
-//        if(!user){
-//         return res.status(404).json({
-//             message:"User not found",
-//             success:false
-//         })
-//        }
-
-//        //extract public id of the old image rom the url if it exists
-//        if(user.photoUrl){
-//         //This way we can extract the cloudinary images 
-//         const publicId=user.photoUrl.split("/").pop().split(".")[0] //extract public id
-//         deleteMediaFromCloudinary(publicId)
-//        }
-
-//        //upload New Photo
-//        const cloudResponse=await uploadMedia(profilePhoto.path);
-//        const photoUrl=cloudResponse.secure_url;
-
-//        const updatedData={name,photoUrl};
-//        const updatedUser=await User.findByIdAndUpdate(userId,updatedData,{
-//         new:true
-//        }).select("-password")
-//        return res.status(200).json({
-//         success:true,
-//         user:updatedUser,
-//         message:"Profile Updated Successfully"
-
-//     }
-//        )
-
-//     } catch (error) {
-//         console.log(error);
-//         return res.status(500).json({
-//             success:false,
-//             message:"Failed to load  update profile"
-//         })   
-//     }
-// }
-
-//Update Profile 
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.id; // Assuming req.id holds the user ID from authentication middleware

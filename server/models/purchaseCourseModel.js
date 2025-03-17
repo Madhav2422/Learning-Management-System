@@ -21,9 +21,16 @@ const coursePurchaseSchema = new mongoose.Schema({
         default: "Pending"
     },
     paymentId: {
-        type: "String",
+        type: String,
+        default: null
+
+    },
+    razorpayOrderId: {  // ✅ Add this field to track orders correctly
+        type: String,
         required: true
     }
+
+
 }, { timestamps: true });
 
 export const CoursePurchase = mongoose.model('CoursePurchase', coursePurchaseSchema)
