@@ -3,13 +3,14 @@ import rootReducer from "./rootReducer";
 import { authApi } from "@/features/apis/authApi";
 import { courseApi } from "@/features/apis/courseApi";
 import { purchaseApi } from "@/features/apis/purchaseApi";
+import { courseProgressApi } from "@/features/apis/courseProgressApi";
 
 export const appStore = configureStore({
 
     //slices
     reducer: rootReducer,
     //This makes sure that the store can handle both normal Redux behavior and the extra features provided by authApi, like managing API calls, caching, and syncing data automatically.
-    middleware: (defaultMiddleware) => defaultMiddleware().concat(authApi.middleware,courseApi.middleware,purchaseApi.middleware)
+    middleware: (defaultMiddleware) => defaultMiddleware().concat(authApi.middleware,courseApi.middleware,purchaseApi.middleware,courseProgressApi.middleware)
 
 });
 
