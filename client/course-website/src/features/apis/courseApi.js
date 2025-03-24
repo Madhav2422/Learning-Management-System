@@ -90,8 +90,31 @@ export const courseApi = createApi({
                 method: "PATCH",
             }),
         }),
+        getSearchCourses: builder.query({
+            query: ({ categories, searchQuery, sortByPrice }) => {
+                //Build query string 
+                let queryString = `/search?query= ${encodeURIComponent(searchQuery)}`;
+
+                //Append category
+                if (categories && categories.length > 0) {
+                    const categoriesString = categories.map(encodeURIComponent).join(",")
+                    queryString += `&categories=${categoriesString}`;
+                }
+                //Append sort by price  if Available 
+                if (sortByPrice) {
+                    queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
+                }
+
+                return {
+                    url: queryString,
+                    method: "GET"
+
+                }
+
+            },
+        }),
 
     }),
 });
 
-export const { useCreateCourseMutation, useGetPublishedCoursesQuery ,useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation, useGetCourseLectureQuery, useEditLectureMutation, useRemoveLectureMutation, useGetLecturebyIdQuery, usePublishCourseMutation } = courseApi;
+export const { useCreateCourseMutation, useGetPublishedCoursesQuery, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation, useGetCourseLectureQuery, useEditLectureMutation, useRemoveLectureMutation, useGetLecturebyIdQuery, usePublishCourseMutation,useGetSearchCoursesQuery} = courseApi;

@@ -1,4 +1,4 @@
-import { createCourse, createLecture, editCourse, editLecture, getCourseByID, getCourseLecture, getCreatorCourses, getLectureById,  getPublishedCourses, removeLecture, togglePublishCourse } from "../controllers/courseController.js";
+import { createCourse, createLecture, editCourse, editLecture, getCourseByID, getCourseLecture, getCreatorCourses, getLectureById,  getPublishedCourses, removeLecture, searchCourse, togglePublishCourse } from "../controllers/courseController.js";
 import isAuthenticated from "../middleware/isAuthenticated.js";
 import express from "express"
 import upload from "../utils/multer.js"
@@ -19,5 +19,6 @@ router.route("/lecture/:lectureId").delete(isAuthenticated, removeLecture);
 router.route("/lecture/:lectureId").get(isAuthenticated,  getLectureById);
 router.route("/:courseId").patch(isAuthenticated, togglePublishCourse);
 // router.post("/purchase", isAuthenticated, paymentRazorpay);
+router.route("/search").get(isAuthenticated, searchCourse);
 
 export default router
