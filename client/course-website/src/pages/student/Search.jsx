@@ -1,20 +1,27 @@
-import { Filter } from 'lucide-react'
 import React from 'react'
 import SearchResult from './SearchResult';
 import FilterPage from './FilterPage';
+import { useGetSearchCoursesQuery } from '@/features/apis/courseApi';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useSearchParams } from 'react-router-dom';
 
 const Search = () => {
 
-  const isLoading = false;
+   const{data,isLoading}=useGetSearchCoursesQuery();
+
+  //Will get the search results 
+  const [searchParams]=useSearchParams();
+  const query=searchParams.get("query");
+
   const isEmpty = false;
   return (
-    <div className='max-w-7xl mx-auto p-4 md:p-8'>Search
+    <div className='max-w-7xl mx-auto p-4 md:p-8 mt-5'>Search
 
       <div className='my-6'>
-        <h1>Result for "html"</h1>
-        <p>Showing Results for {""}
+        <h1 className='font-bold text-xl md:text-2xl' >Result for "{query}"</h1>
+        <p> Showing results for the 
 
-          <span className='text-blue-800 font-bold  italic'>Frontend Developer </span>
+          <span className='text-blue-800 font-bold  italic'> {query} </span>
 
         </p>
       </div>
