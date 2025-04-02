@@ -18,6 +18,30 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Refetch_Creator_Course']
         }),
+
+        getSearchCourse:builder.query({
+            query: ({searchQuery, categories, sortByPrice}) => {
+              // Build qiery string
+              let queryString = `/search?query=${encodeURIComponent(searchQuery)}`
+      
+              // append cateogry 
+              if(categories && categories.length > 0) {
+                const categoriesString = categories.map(encodeURIComponent).join(",");
+                queryString += `&categories=${categoriesString}`; 
+              }
+      
+              // Append sortByPrice is available
+              if(sortByPrice){
+                queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`; 
+              }
+      
+              return {
+                url:queryString,
+                method:"GET", 
+              }
+            }
+          }),
+
         getPublishedCourses: builder.query({
             query: () => ({
                 url: "/published-courses",
@@ -90,31 +114,9 @@ export const courseApi = createApi({
                 method: "PATCH",
             }),
         }),
-        getSearchCourses: builder.query({
-            query: ({ categories, searchQuery, sortByPrice }) => {
-                //Build query string 
-                let queryString = `/search?query= ${encodeURIComponent(searchQuery)}`;
-
-                //Append category
-                if (categories && categories.length > 0) {
-                    const categoriesString = categories.map(encodeURIComponent).join(",")
-                    queryString += `&categories=${categoriesString}`;
-                }
-                //Append sort by price  if Available 
-                if (sortByPrice) {
-                    queryString += `&sortByPrice=${encodeURIComponent(sortByPrice)}`;
-                }
-
-                return {
-                    url: queryString,
-                    method: "GET"
-
-                }
-
-            },
-        }),
+      
 
     }),
 });
 
-export const { useCreateCourseMutation, useGetPublishedCoursesQuery, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation, useGetCourseLectureQuery, useEditLectureMutation, useRemoveLectureMutation, useGetLecturebyIdQuery, usePublishCourseMutation,useGetSearchCoursesQuery} = courseApi;
+export const { useCreateCourseMutation, useGetPublishedCoursesQuery, useGetCreatorCourseQuery, useEditCourseMutation, useGetCourseByIDQuery, useCreateLectureMutation, useGetCourseLectureQuery, useEditLectureMutation, useRemoveLectureMutation, useGetLecturebyIdQuery, usePublishCourseMutation,useGetSearchCourseQuery} = courseApi;

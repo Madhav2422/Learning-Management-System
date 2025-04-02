@@ -35,6 +35,56 @@ export const createCourse = async (req, res) => {
     }
 }
 
+
+//Search Api
+export const searchCourse = async (req, res) => {
+    try {
+        const { query = "", categories = [], sortByPrice = "" } = req.query;
+
+        // Ensure `categories` is an array
+        const categoryFilter = Array.isArray(categories) ? categories : [categories];
+
+        // Define search criteria
+        const searchCriteria = {
+            isPublished: true,
+            $or: [
+                { courseTitle: { $regex: query, $options: "i" } },
+                { subTitle: { $regex: query, $options: "i" } },
+                { category: { $regex: query, $options: "i" } },
+            ]
+        };
+
+        // Apply category filter if provided
+        if (categoryFilter.length > 0 && categoryFilter[0] !== "") {
+            searchCriteria.category = { $in: categoryFilter };
+        }
+
+        // Define sorting order
+        const sortOptions = {};
+        if (sortByPrice === "low") {
+            sortOptions.coursePrice = 1; // Ascending
+        } else if (sortByPrice === "high") {
+            sortOptions.coursePrice = -1; // Descending
+        }
+
+        const courses = await Course.find(searchCriteria)
+            .populate({ path: "creator", select: "name photoUrl" })
+            .sort(sortOptions);
+
+        return res.status(200).json({
+            success: true,
+            courses: courses || []
+        });
+
+    } catch (error) {
+        console.log("Search Error:", error);
+        return res.status(500).json({
+            message: "Failed to search courses"
+        });
+    }
+};
+
+
 //Api for getting all the creator courses
 export const getCreatorCourses = async (req, res) => {
 
@@ -120,26 +170,25 @@ export const editCourse = async (req, res) => {
 };
 
 // Get courses by Id
-export const getCourseByID = async (req, res) => {
+export const getCourseById = async (req,res) => {
     try {
-        const { courseId } = req.params;
+        const {courseId} = req.params;
 
         const course = await Course.findById(courseId);
 
-        if (!course) {
+        if(!course){
             return res.status(404).json({
-                message: "Course not found"
+                message:"Course not found!"
             })
         }
         return res.status(200).json({
             course
         })
-
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            message: "Failed toget course by id "
-        });
+            message:"Failed to get course by id"
+        })
     }
 }
 
@@ -339,43 +388,4 @@ export const getPublishedCourses = async (req, res) => {
 }
 
 
-//Search Api
-export const searchCourse = async (req, res) => {
-    try {
-        const { query = " ", categories = [], sortByPrice = "" } = req.query;
 
-        //Create search query
-        const searchCriteria = {
-            isPublished: true,
-            $or: [
-                { courseTitle: { $regex: query, $options: "i" } },
-                { subTitle: { $regex: query, $options: "i" } },
-                { category: { $regex: query, $options: "i" } }
-            ]
-        }
-
-        //if categories are selected 
-        if (categories.length > 0) {
-            searchCriteria.category = { $in: categories }
-        }
-
-        //define Sorting order
-        const sortOptions = {};
-        if (sortByPrice === "low") {
-            sortOptions.coursePrice = 1; //Sort by price ascending order
-        }
-        else if (sortByPrice === "high") {
-            sortOptions.coursePrice = -1; //Sort by price descending order
-        }
-
-        let courses = await Course.find(searchCriteria).populate({ path: "creator", select: "name photoUrl" }).sort(sortOptions);
-
-        return res.status(200).json({
-            success: true,
-            courses: courses || []
-        })
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
