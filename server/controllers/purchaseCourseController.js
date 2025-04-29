@@ -183,19 +183,35 @@ export const getCourseDetailWithPurchaseStatus = async (req, res) => {
 }
 
 //All Purchased Courses
+// export const allPurchasedCourses = async (_, res) => {
+//     try {
+//         const purchasedCourses = await CoursePurchase.find({ status: "Completed" }).populate("courseId");
+//         // if (!purchasedCourses) {
+//         //     return res.status(404).json({
+//         //         purchasedCourses: []
+//         //     })
+//         // }
+//         return res.status(200).json({
+//             purchasedCourses
+//         });
+
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
 export const allPurchasedCourses = async (_, res) => {
     try {
         const purchasedCourses = await CoursePurchase.find({ status: "Completed" }).populate("courseId");
-        if (!purchasedCourses) {
-            return res.status(404).json({
-                purchasedCourses: []
-            })
-        }
-        return res.json(200).json({
-            purchasedCourses
-        })
+        return res.status(200).json({
+            success: true,
+            purchasedCourses // Changed from purchasedCourses to match frontend expectation
+        });
 
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch purchased courses"
+        });
     }
 }

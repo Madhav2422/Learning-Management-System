@@ -18,6 +18,7 @@ import EditLecture from './pages/admin/lecture/EditLecture'
 import CourseDetail from './pages/student/CourseDetail'
 import CourseProgress from './pages/student/CourseProgress'
 import Search from './pages/student/Search'
+import { AdminRoute, AuthenticatedUser, ProtectedRoute } from './components/ProtectedRoutes'
 
 function App() {
 
@@ -37,33 +38,33 @@ function App() {
       },
       {
         path:"login",
-        element:<Login/>
+        element:<AuthenticatedUser><Login/></AuthenticatedUser> 
       },
       {
         path:"my-learning",
-        element:<MyLearning/>
+        element: <ProtectedRoute><MyLearning/></ProtectedRoute> 
       },
       {
         path:"profile",
-        element:<Profile/>
+        element: <ProtectedRoute><Profile/></ProtectedRoute> 
       },
       {
         path:"course/search",
-        element:<Search/>
+        element:<ProtectedRoute><Search/></ProtectedRoute> 
       },
       
       {
         path:"course-detail/:courseId",
-        element:<CourseDetail/>
+        element: <ProtectedRoute><CourseDetail/></ProtectedRoute> 
       },
       {
         path:"course-progress/:courseId",
-        element:<CourseProgress/>
+        element:<ProtectedRoute><CourseProgress/></ProtectedRoute> 
       },
       // admin routes starts from here 
       {
         path:"admin",
-        element:<Sidebar/>,
+        element: <AdminRoute> <Sidebar/></AdminRoute> ,
         children:[
           {
             path:"dashboard",
