@@ -19,6 +19,8 @@ import CourseDetail from './pages/student/CourseDetail'
 import CourseProgress from './pages/student/CourseProgress'
 import Search from './pages/student/Search'
 import { AdminRoute, AuthenticatedUser, ProtectedRoute } from './components/ProtectedRoutes'
+import PurchaseCourseProtectedRoute from './components/PurchaseCourseProtectedRoute'
+import { ThemeProvider } from './components/ThemeProvider'
 
 function App() {
 
@@ -59,7 +61,12 @@ function App() {
       },
       {
         path:"course-progress/:courseId",
-        element:<ProtectedRoute><CourseProgress/></ProtectedRoute> 
+
+        element:<ProtectedRoute>
+          <PurchaseCourseProtectedRoute>
+          <CourseProgress/>
+          </PurchaseCourseProtectedRoute>
+          </ProtectedRoute> 
       },
       // admin routes starts from here 
       {
@@ -100,7 +107,9 @@ function App() {
 
   return (
     <>
+    <ThemeProvider>
    <RouterProvider router={appRouter}/>
+   </ThemeProvider>
     
     </>
   )

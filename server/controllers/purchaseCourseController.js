@@ -13,43 +13,104 @@ const razorpayInstance = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
 
+// export const paymentRazorpay = async (req, res) => {
+//     try {
+//         const { courseId } = req.body;
+//         const userId = req.id;
+
+
+//         const course = await Course.findById(courseId);
+//         if (!course) {
+//             return res.status(404).json({ message: "Course not found" });
+//         }
+
+//         // 📝 Step 1: Create an order
+//         const amount = course.coursePrice * 100; // Convert to paisa
+//         const options = {
+//             amount,
+//             currency: process.env.CURRENCY || "INR",
+//             receipt: `${userId}-${crypto.randomBytes(5).toString("hex")}`, // ✅ Store userId in receipt
+//         };
+
+//         const order = await razorpayInstance.orders.create(options);
+
+//         // 🛍️ Step 2: Store purchase details in DB
+//         const newPurchase = new CoursePurchase({
+//             courseId,
+//             userId, // ✅ Store userId
+//             amount,
+//             status: "Pending",
+//             razorpayOrderId: order.id, // ✅ Store Razorpay order ID
+//         });
+
+//         await newPurchase.save();
+
+//         console.log("New Purchase:", newPurchase);
+
+//         res.status(201).json({ success: true, order }); // ✅ Return order
+//     } catch (error) {
+//         console.error("Razorpay Payment Error:", error);
+//         res.status(500).json({ success: false, message: "Payment failed", error: error.message });
+//     }
+// };
+
+
 export const paymentRazorpay = async (req, res) => {
+    console.log("Razorpay Keys:", process.env.RAZORPAY_KEY_ID, process.env.RAZORPAY_KEY_SECRET);
+
+
     try {
         const { courseId } = req.body;
         const userId = req.id;
 
+        console.log("🔍 Received purchase request for courseId:", courseId, "from userId:", userId);
 
         const course = await Course.findById(courseId);
         if (!course) {
+            console.log("❌ Course not found for ID:", courseId);
             return res.status(404).json({ message: "Course not found" });
         }
 
-        // 📝 Step 1: Create an order
-        const amount = course.coursePrice * 100; // Convert to paisa
+        const amount = course.coursePrice * 100; // Amount in paisa
+        console.log("💰 Course Price:", course.coursePrice, "→ Amount in paisa:", amount);
+
+        const receipt = `${userId}-${crypto.randomBytes(5).toString("hex")}`;
+        console.log("🧾 Receipt ID:", receipt);
+
         const options = {
             amount,
             currency: process.env.CURRENCY || "INR",
-            receipt: `${userId}-${crypto.randomBytes(5).toString("hex")}`, // ✅ Store userId in receipt
+            receipt,
         };
 
-        const order = await razorpayInstance.orders.create(options);
+        // Separated try-catch to isolate Razorpay errors
+        let order;
+        try {
+            order = await razorpayInstance.orders.create(options);
+            console.log("✅ Razorpay Order Created:", order);
+        } catch (razorErr) {
+            console.error("❌ Razorpay Order Creation Failed:", razorErr);
+            return res.status(500).json({
+                success: false,
+                message: "Razorpay order creation failed",
+                error: razorErr,
+            });
+        }
 
-        // 🛍️ Step 2: Store purchase details in DB
         const newPurchase = new CoursePurchase({
             courseId,
-            userId, // ✅ Store userId
+            userId,
             amount,
             status: "Pending",
-            razorpayOrderId: order.id, // ✅ Store Razorpay order ID
+            razorpayOrderId: order.id,
         });
 
         await newPurchase.save();
+        console.log("🛒 New Purchase Saved to DB:", newPurchase);
 
-        console.log("New Purchase:", newPurchase);
-
-        res.status(201).json({ success: true, order }); // ✅ Return order
+        res.status(201).json({ success: true, order });
     } catch (error) {
-        console.error("Razorpay Payment Error:", error);
+        console.error("❌ Razorpay Payment Error:", error);
         res.status(500).json({ success: false, message: "Payment failed", error: error.message });
     }
 };
@@ -161,7 +222,7 @@ export const verifyPayment = async (req, res) => {
 export const getCourseDetailWithPurchaseStatus = async (req, res) => {
     try {
         const { courseId } = req.params;
-        const userId  = req.id;
+        const userId = req.id;
 
         const course = await Course.findById(courseId).populate({ path: "creator" }).populate({ path: "lectures" });
         const purchased = await CoursePurchase.findOne({ userId, courseId });
