@@ -1,38 +1,119 @@
 import React from 'react';
 import Course from './Course';
 import { useLoadUserQuery } from '@/features/apis/authApi';
+import { useNavigate } from 'react-router-dom';
+
+// export const MyLearning = () => {
+//     const { data, isLoading } = useLoadUserQuery();
+
+//     const user = data?.user;
+//     const myLearningCourses = user?.enrolledCourses || [];
+
+//     return (
+//         <div className='max-w-4xl mx-auto my-24 px-4 md:px-0'>
+//             <h1 className='font-bold text-2xl'>My Learning</h1>
+
+//             <div className='my-5'>
+//                 {isLoading ? (
+//                     <MyLearningSkeleton />
+//                 ) : myLearningCourses.length === 0 ? (
+//                     <p>You are not enrolled in any course</p>
+//                 ) : (
+//                     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+//                         {myLearningCourses.map((course) => (
+//                             <Course key={course._id} course={course} />
+//                         ))}
+//                     </div>
+//                 )}
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default MyLearning;
+
+
+// export const MyLearning = () => {
+//     const { data, isLoading } = useLoadUserQuery();
+//     const navigate = useNavigate();
+  
+//     const user = data?.user;
+//     const myLearningCourses = user?.enrolledCourses || [];
+  
+//     const handleCourseClick = (courseId) => {
+//       navigate(`/course/${courseId}/progress`);
+//     };
+  
+//     return (
+//       <div className="max-w-4xl mx-auto my-24 px-4 md:px-0">
+//         <h1 className="font-bold text-2xl">My Learning</h1>
+  
+//         <div className="my-5">
+//           {isLoading ? (
+//             <MyLearningSkeleton />
+//           ) : myLearningCourses.length === 0 ? (
+//             <p>You are not enrolled in any course</p>
+//           ) : (
+//             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+//               {myLearningCourses.map((course) => (
+//                 <div
+//                   key={course._id}
+//                   onClick={() => handleCourseClick(course._id)}
+//                   className="cursor-pointer"
+//                 >
+//                   <Course course={course} />
+//                 </div>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     );
+//   };
+  
+//   export default MyLearning;
 
 export const MyLearning = () => {
     const { data, isLoading } = useLoadUserQuery();
-
+    const navigate = useNavigate();
+  
     const user = data?.user;
     const myLearningCourses = user?.enrolledCourses || [];
-
+  
+    // Handle click to go to course progress page
+    const handleCourseClick = (courseId) => {
+      navigate(`/course-progress/${courseId}`);
+    };
+  
     return (
-        <div className='max-w-4xl mx-auto my-24 px-4 md:px-0'>
-            <h1 className='font-bold text-2xl'>My Learning</h1>
-
-            <div className='my-5'>
-                {isLoading ? (
-                    <MyLearningSkeleton />
-                ) : myLearningCourses.length === 0 ? (
-                    <p>You are not enrolled in any course</p>
-                ) : (
-                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
-                        {myLearningCourses.map((course) => (
-                            <Course key={course._id} course={course} />
-                        ))}
-                    </div>
-                )}
+      <div className="max-w-4xl mx-auto my-24 px-4 md:px-0">
+        <h1 className="font-bold text-2xl">My Learning</h1>
+  
+        <div className="my-5">
+          {isLoading ? (
+            <MyLearningSkeleton />
+          ) : myLearningCourses.length === 0 ? (
+            <p>You are not enrolled in any course</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {myLearningCourses.map((course) => (
+                <div
+                  key={course._id}
+                  onClick={() => handleCourseClick(course._id)}
+                  className="cursor-pointer"
+                >
+                  <Course course={course} />
+                </div>
+              ))}
             </div>
+          )}
         </div>
+      </div>
     );
-};
-
-export default MyLearning;
-
-
-
+  };
+  
+  export default MyLearning;
+  
 
 // Skeleton component for loading state
 const MyLearningSkeleton = () => (
